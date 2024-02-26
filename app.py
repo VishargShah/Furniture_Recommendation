@@ -21,6 +21,7 @@ from google.cloud import storage
 
 PROJECT_ID = os.environ.get("GCP_PROJECT")  # Your Google Cloud Project ID
 LOCATION = os.environ.get("GCP_REGION")  # Your Google Cloud Project Region
+BUCKET_URI = "gs://image_video_storage"
 vertexai.init(project=PROJECT_ID, location=LOCATION)
 
 #Initializing Directory
@@ -325,27 +326,27 @@ with tab4:
             """Gemini 1.0 Pro Vision can also provide the description of what is going on in the video:"""
         )
         
-        # Video Uploading Tab
-        #with st.form("my-form", clear_on_submit=True):
-        #    uploaded_files = st.file_uploader("Choose a video file:", type=["mp4"], accept_multiple_files=False)
-        #    submitted = st.form_submit_button("SUBMIT")
-        #if uploaded_files is not None:
-        #    # Iterate through all the uploaded videos
-        #    for file in uploaded_files:
-        #        # Save each video
-        #        vid = file.name
-        #        with open("video_files/" + vid, mode="wb") as f:
-        #            f.write(file.read())
         
         vide_desc_uri = "gs://image_video_storage/production_id_3773486 (1080p).mp4"
         #video_desc_url = (
         #    "https://storage.googleapis.com/" + vide_desc_uri.split("gs://")[1]
         #)
+        # Audio Uploading Tab
+        bucket_name = 'image_video_storage'
+        # 1. Authenticate to Google Cloud
+        credentials, project = google.auth.default()
+        # 2. Create a storage client
+        storage_client = storage.Client(project=PROJECT_ID)
+        # 3. Get a reference to the bucket (check existence)
+        bucket = storage_client.bucket(bucket_name)
+        blob = bucket.blob(vide_desc_uri)
+        blob.download_to_filename('video_files/temp_1.mp4')
         if vide_desc_uri:
             vide_desc_img = Part.from_uri(vide_desc_uri, mime_type="video/mp4")
-            #st.video(vide_desc_uri)
+            st.video('video_files/temp_1.mp4', format="video/mp4")
             st.write("Our expectation: Generate the description of the video")
-            prompt = """Describe the interior design of the space: \n
+            prompt = """
+            Describe the interior design of the space: \n
             - What is the kind of design & theme? \n
             - Where are the furniture and decor items present? \n
             - What is the colour theme?
