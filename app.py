@@ -348,10 +348,8 @@ with tab4:
             st.video('video_files/temp_1.mp4', format="video/mp4")
             st.write("Our expectation: Generate the description of the video")
             prompt = """
-            Describe the interior design of the space: \n
-            - What is the kind of design & theme? \n
-            - Where are the furniture and decor items present? \n
-            - What is the colour theme?
+            Consider yourself an expert Interior Design and describe in details all the aspects of interior design.
+            Also, give the estimate budget to build such design. Focus on theme, colour, style rythm, creativity present.
             """
             tab1, tab2 = st.tabs(["Response", "Prompt"])
             vide_desc_description = st.button(
