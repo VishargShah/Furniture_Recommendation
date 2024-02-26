@@ -6,7 +6,7 @@ Created on Mon Feb 26 23:56:10 2024
 """
 import os
 import streamlit as st
-from generate_file import image_creation
+#from generate_file import image_creation
 import vertexai
 from vertexai.generative_models import (
     GenerationConfig,
