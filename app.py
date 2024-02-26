@@ -5,6 +5,7 @@ Created on Mon Feb 26 23:56:10 2024
 @author: P00121384
 """
 import os
+from pathlib import Path as p
 import streamlit as st
 #from generate_file import image_creation
 import vertexai
@@ -19,6 +20,10 @@ from vertexai.generative_models import (
 PROJECT_ID = os.environ.get("GCP_PROJECT")  # Your Google Cloud Project ID
 LOCATION = os.environ.get("GCP_REGION")  # Your Google Cloud Project Region
 vertexai.init(project=PROJECT_ID, location=LOCATION)
+
+#Initializing Directory
+data_folder = p.cwd() / "video_files"
+p(data_folder).mkdir(parents=True, exist_ok=True)
 
 
 @st.cache_resource
@@ -317,7 +322,20 @@ with tab4:
         st.markdown(
             """Gemini 1.0 Pro Vision can also provide the description of what is going on in the video:"""
         )
-        vide_desc_uri = "gs://github-repo/img/gemini/multimodality_usecases_overview/mediterraneansea.mp4"
+        
+        # Video Uploading Tab
+        #with st.form("my-form", clear_on_submit=True):
+        #    uploaded_files = st.file_uploader("Choose a video file:", type=["mp4"], accept_multiple_files=False)
+        #    submitted = st.form_submit_button("SUBMIT")
+        #if uploaded_files is not None:
+        #    # Iterate through all the uploaded videos
+        #    for file in uploaded_files:
+        #        # Save each video
+        #        vid = file.name
+        #        with open("video_files/" + vid, mode="wb") as f:
+        #            f.write(file.read())
+        
+        vide_desc_uri = "gs://image_video_storage/production_id_3773486 (1080p).mp4"
         video_desc_url = (
             "https://storage.googleapis.com/" + vide_desc_uri.split("gs://")[1]
         )
@@ -325,10 +343,10 @@ with tab4:
             vide_desc_img = Part.from_uri(vide_desc_uri, mime_type="video/mp4")
             st.video(video_desc_url)
             st.write("Our expectation: Generate the description of the video")
-            prompt = """Describe what is happening in the video and answer the following questions: \n
-            - What am I looking at? \n
-            - Where should I go to see it? \n
-            - What are other top 5 places in the world that look like this?
+            prompt = """Describe the interior design of the space: \n
+            - What is the kind of design & theme? \n
+            - Where are the furniture and decor items present? \n
+            - What is the colour theme?
             """
             tab1, tab2 = st.tabs(["Response", "Prompt"])
             vide_desc_description = st.button(
