@@ -128,40 +128,17 @@ with tab3:
                     """
         )
         
-        
-        
         room_image_uri = "gs://image_video_storage/recommendation_on.jpeg"
-        chair_1_image_uri = (
-            "gs://github-repo/img/gemini/retail-recommendations/furnitures/chair1.jpeg"
-        )
-        chair_2_image_uri = (
-            "gs://github-repo/img/gemini/retail-recommendations/furnitures/chair2.jpeg"
-        )
-        chair_3_image_uri = (
-            "gs://github-repo/img/gemini/retail-recommendations/furnitures/chair3.jpeg"
-        )
-        chair_4_image_uri = (
-            "gs://github-repo/img/gemini/retail-recommendations/furnitures/chair4.jpeg"
-        )
-
-        chair_1_image_urls = (
-            "https://storage.googleapis.com/" + chair_1_image_uri.split("gs://")[1]
-        )
-        chair_2_image_urls = (
-            "https://storage.googleapis.com/" + chair_2_image_uri.split("gs://")[1]
-        )
-        chair_3_image_urls = (
-            "https://storage.googleapis.com/" + chair_3_image_uri.split("gs://")[1]
-        )
-        chair_4_image_urls = (
-            "https://storage.googleapis.com/" + chair_4_image_uri.split("gs://")[1]
-        )
+        sku_1_image_uri = "gs://image_video_storage/image1.jpeg"
+        sku_2_image_uri = "gs://image_video_storage/image2.jpeg"
+        sku_3_image_uri = "gs://image_video_storage/image3.jpeg"
+        sku_4_image_uri = "gs://image_video_storage/image4.jpeg"
 
         room_image = Part.from_uri(room_image_uri, mime_type="image/jpeg")
-        SKU_1_image = Part.from_uri(chair_1_image_uri, mime_type="image/jpeg")
-        SKU_2_image = Part.from_uri(chair_2_image_uri, mime_type="image/jpeg")
-        SKU_3_image = Part.from_uri(chair_3_image_uri, mime_type="image/jpeg")
-        SKU_4_image = Part.from_uri(chair_4_image_uri, mime_type="image/jpeg")
+        SKU_1_image = Part.from_uri(sku_1_image_uri, mime_type="image/jpeg")
+        SKU_2_image = Part.from_uri(sku_2_image_uri, mime_type="image/jpeg")
+        SKU_3_image = Part.from_uri(sku_3_image_uri, mime_type="image/jpeg")
+        SKU_4_image = Part.from_uri(sku_4_image_uri, mime_type="image/jpeg")
 
         # Audio Uploading Tab
         bucket_name = 'image_video_storage'
@@ -176,37 +153,61 @@ with tab3:
         blob = bucket.blob(room_image_uri_regex)
         blob.download_to_filename('image_recommendation/recommendation_on.jpeg')
         st.image('image_recommendation/recommendation_on.jpeg', width=500, caption="Image of a living room")
+
+        # Get the blob (file) object
+        room_image_uri_regex = room_image_uri.replace("gs://image_video_storage/","")
+        blob = bucket.blob(room_image_uri_regex)
+        blob.download_to_filename('image_recommendation/image1.jpeg')
+        st.image('image_recommendation/image1.jpeg', width=500, caption="Image of a living room")
+        
+        # Get the blob (file) object
+        room_image_uri_regex = room_image_uri.replace("gs://image_video_storage/","")
+        blob = bucket.blob(room_image_uri_regex)
+        blob.download_to_filename('image_recommendation/image2.jpeg')
+        st.image('image_recommendation/image2.jpeg', width=500, caption="Image of a living room")
+        
+        # Get the blob (file) object
+        room_image_uri_regex = room_image_uri.replace("gs://image_video_storage/","")
+        blob = bucket.blob(room_image_uri_regex)
+        blob.download_to_filename('image_recommendation/image3.jpeg')
+        st.image('image_recommendation/image3.jpeg', width=500, caption="Image of a living room")
+        
+        # Get the blob (file) object
+        room_image_uri_regex = room_image_uri.replace("gs://image_video_storage/","")
+        blob = bucket.blob(room_image_uri_regex)
+        blob.download_to_filename('image_recommendation/image4.jpeg')
+        st.image('image_recommendation/image4.jpeg', width=500, caption="Image of a living room")
         
         st.image(
             [
-                chair_1_image_urls,
-                chair_2_image_urls,
-                chair_3_image_urls,
-                chair_4_image_urls,
+                'image_recommendation/image1.jpeg',
+                'image_recommendation/image2.jpeg',
+                'image_recommendation/image3.jpeg',
+                'image_recommendation/image4.jpeg',
             ],
             width=200,
             caption=["SKU 1", "SKU 2", "SKU 3", "SKU 4"],
         )
 
         st.write(
-            "Our expectation: Recommend a chair that would complement the given image of a living room."
+            "Our expectation: Recommend a SKU that would complement the given image of a living room."
         )
         content = [
-            "Consider yourself a experienced Interior Designer. You need to provide the suggestion of the furniture or other object which will go with the theme of the house."
-            "Consider the following Furniture object:",
-            "object 1:",
+            "Consider yourself a experienced Interior Designer. You need to provide the suggestion of the SKU which will go with the theme of the house."
+            "Consider the following SKU:",
+            "SKU 1:",
             SKU_1_image,
-            "object 2:",
+            "SKU 2:",
             SKU_2_image,
-            "object 3:",
+            "SKU 3:",
             SKU_3_image,
             "and",
-            "object 4:",
+            "SKU 4:",
             SKU_4_image,
             "\n"
             "For each object, explain why it would be suitable or not suitable for the following room:",
             room_image,
-            "Only recommend for the room provided and not other rooms. Provide your recommendation in a table format with chair name and reason as columns in detail.",
+            "Only recommend for the room provided and not other rooms. Provide your recommendation in a table format with SKU name and reason as columns in detail.",
         ]
 
         tab1, tab2 = st.tabs(["Response", "Prompt"])
