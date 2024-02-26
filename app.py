@@ -243,7 +243,7 @@ with tab3:
         er_diag_uri_regex = er_diag_uri.replace("gs://image_video_storage/","")
         blob = bucket.blob(er_diag_uri_regex)
         blob.download_to_filename('image_description/describe_image.jpeg')
-        st.image('image_description/describe_image.jpeg', width=350, caption="Image of a Interior Design")
+        st.image('image_description/describe_image.jpeg', width=700, caption="Image of a Interior Design")
         st.write(
             "Our expectation: Describe the Interior Design Image."
         )
