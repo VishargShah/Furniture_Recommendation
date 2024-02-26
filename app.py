@@ -386,8 +386,10 @@ with tab4:
             st.write("Our expectation: Generate the tags for the video")
             prompt = """Answer the following questions using the video only:
                         1. What is in the video?
-                        2. What objects are in the video?
-                        3. Provide 5 best tags for this video?
+                        2. What are the furniture objects present in the video?
+                        3. What are the light fittings presnt in the video?
+                        4. What are the decorative object present in the video?
+                        5. What is the colour of the walls?
                         Give the answer in the table format with question and answer as columns.
             """
             tab1, tab2 = st.tabs(["Response", "Prompt"])
