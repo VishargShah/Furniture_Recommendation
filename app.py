@@ -206,19 +206,22 @@ with tab3:
 
     with diagrams_undst:
         er_diag_uri = (
-            "gs://github-repo/img/gemini/multimodality_usecases_overview/er.png"
+            "gs://github-repo/img/gemini/retail-recommendations/rooms/living_room.jpeg"
         )
-        er_diag_url = "https://storage.googleapis.com/" + er_diag_uri.split("gs://")[1]
+        er_diag_url = (
+            "https://storage.googleapis.com/" + room_image_uri.split("gs://")[1]
+        )
+
 
         st.write(
-            "Gemini 1.0 Pro Vision multimodal capabilities empower it to comprehend diagrams and take actionable steps, such as optimization or code generation. The following example demonstrates how Gemini 1.0 can decipher an Entity Relationship (ER) diagram."
+            "Gemini 1.0 Pro Vision multimodal capabilities empower it to comprehend diagrams and describe it. The following example demonstrates how Gemini 1.0 can decipher an Interior Design"
         )
         er_diag_img = Part.from_uri(er_diag_uri, mime_type="image/jpeg")
-        st.image(er_diag_url, width=350, caption="Image of a ER diagram")
+        st.image(er_diag_url, width=350, caption="Image of a Interior Design")
         st.write(
-            "Our expectation: Document the entities and relationships in this ER diagram."
+            "Our expectation: Describe the Interior Design Image."
         )
-        prompt = """Document the entities and relationships in this ER diagram.
+        prompt = """Document the objects present in Interior design and describe the entire interior room.
                 """
         tab1, tab2 = st.tabs(["Response", "Prompt"])
         er_diag_img_description = st.button("Generate!", key="er_diag_img_description")
