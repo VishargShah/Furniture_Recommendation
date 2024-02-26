@@ -348,8 +348,11 @@ with tab4:
             st.video('video_files/temp_1.mp4', format="video/mp4")
             st.write("Our expectation: Generate the description of the video")
             prompt = """
-            Consider yourself an expert Interior Design and describe in details all the aspects of interior design.
-            Also, give the estimate budget to build such design. Focus on theme, colour, style rythm, creativity present.
+            Describe the interior design of the space in details for each of the following mentioned points: \n
+            - What is the kind of design & theme in detail? \n
+            - Where are the furniture and decor items present in detail? \n
+            - What is the colour theme, ligting, rythm in detail?
+
             """
             tab1, tab2 = st.tabs(["Response", "Prompt"])
             vide_desc_description = st.button(
@@ -373,19 +376,18 @@ with tab4:
         st.markdown(
             """Gemini 1.0 Pro Vision can also extract tags throughout a video, as shown below:."""
         )
-        video_tags_uri = "gs://github-repo/img/gemini/multimodality_usecases_overview/photography.mp4"
-        video_tags_url = (
-            "https://storage.googleapis.com/" + video_tags_uri.split("gs://")[1]
-        )
-        if video_tags_url:
+        video_tags_uri = "gs://image_video_storage/production_id_3773486 (1080p).mp4"
+        #video_tags_url = (
+        #    "https://storage.googleapis.com/" + video_tags_uri.split("gs://")[1]
+        #)
+        if video_tags_uri:
             video_tags_img = Part.from_uri(video_tags_uri, mime_type="video/mp4")
-            st.video(video_tags_url)
+            st.video('video_files/temp_1.mp4', format="video/mp4")
             st.write("Our expectation: Generate the tags for the video")
             prompt = """Answer the following questions using the video only:
                         1. What is in the video?
                         2. What objects are in the video?
-                        3. What is the action in the video?
-                        4. Provide 5 best tags for this video?
+                        3. Provide 5 best tags for this video?
                         Give the answer in the table format with question and answer as columns.
             """
             tab1, tab2 = st.tabs(["Response", "Prompt"])
