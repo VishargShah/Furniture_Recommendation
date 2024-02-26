@@ -28,7 +28,8 @@ vertexai.init(project=PROJECT_ID, location=LOCATION)
 #Initializing Directory
 data_folder = p.cwd() / "video_files"
 p(data_folder).mkdir(parents=True, exist_ok=True)
-
+data_folder = p.cwd() / "image_description"
+p(data_folder).mkdir(parents=True, exist_ok=True)
 
 @st.cache_resource
 def load_models():
@@ -225,24 +226,30 @@ with tab3:
             st.text(content)
 
     with diagrams_undst:
-        er_diag_uri = (
-            "gs://github-repo/img/gemini/retail-recommendations/rooms/living_room.jpeg"
-        )
-        er_diag_url = (
-            "https://storage.googleapis.com/" + room_image_uri.split("gs://")[1]
-        )
-
-
+        er_diag_uri = "gs://image_video_storage/describe_image.jpeg"
         st.write(
             "Gemini 1.0 Pro Vision multimodal capabilities empower it to comprehend diagrams and describe it. The following example demonstrates how Gemini 1.0 can decipher an Interior Design"
         )
         er_diag_img = Part.from_uri(er_diag_uri, mime_type="image/jpeg")
-        st.image(er_diag_url, width=350, caption="Image of a Interior Design")
+        # Audio Uploading Tab
+        bucket_name = 'image_video_storage'
+        # 1. Authenticate to Google Cloud
+        credentials, project = google.auth.default()
+        # 2. Create a storage client
+        storage_client = storage.Client(project=PROJECT_ID)
+        # 3. Get a reference to the bucket (check existence)
+        bucket = storage_client.bucket(bucket_name)
+        # Get the blob (file) object
+        er_diag_uri_regex = er_diag_uri.replace("gs://image_video_storage/","")
+        blob = bucket.blob(er_diag_uri_regex)
+        blob.download_to_filename('image_description/describe_image.jpeg')
+        st.image('image_description/describe_image.jpeg', width=350, caption="Image of a Interior Design")
         st.write(
             "Our expectation: Describe the Interior Design Image."
         )
-        prompt = """Document the objects present in Interior design and describe the entire interior room.
-                """
+        prompt = """
+        Consider yourself as an experience in Interior Design space. You are given the image of interior room and you need to describe in detail. Document the objects present in Interior design and describe the entire interior room. Be specific in each and evry aspect of the design.
+        """
         tab1, tab2 = st.tabs(["Response", "Prompt"])
         er_diag_img_description = st.button("Generate!", key="er_diag_img_description")
         with tab1:
@@ -258,50 +265,14 @@ with tab3:
 
 with tab4:
     st.write("Using Gemini 1.0 Pro Vision - Multimodal model")
-
     vide_desc, video_tags = st.tabs(
         ["Video description", "Video tags"]
     )
-
     with vide_desc:
         st.markdown(
-            """Gemini 1.0 Pro Vision can also provide the description of what is going on in the video:"""
+            """Gemini 1.0 Pro Vision can also provide the description of interior design in the video:"""
         )
-        
-        
-        # 4. Handle uploaded file
-        #with st.form("my-form", clear_on_submit=True):
-        #    uploaded_file = st.file_uploader("Choose a video file:", type=[".mp4"], accept_multiple_files=False)
-        #    submitted = st.form_submit_button("SUBMIT")
-        #if uploaded_file is not None:
-        #    # Iterate through all the uploaded videos
-        #    for file in uploaded_file:
-        #        # Save the video:
-        #        vid = f"{file.name}"
-        #        with open("video_files/" + vid, mode="wb") as f:
-        #            f.write(file.read())     
-        #    # 6. Create blob and upload the file
-        #    blob = bucket.blob(vid)
-        #    blob.upload_from_string(audio_bytes, content_type=uploaded_file.type)
-        #    # Write on local
-        #    with open("data/" + filename, mode="wb") as f:
-        #        f.write(audio_bytes)        
-        #    # Print success message
-        #    st.success(f"File uploaded successfully: {filename}")
-        #else:
-        #    st.info("Please upload a WAV file.")
-
-        
-        
-        
-        
-        
-        
-        
-        vide_desc_uri = "gs://image_video_storage/production_id_3773486 (1080p).mp4"
-        #video_desc_url = (
-        #    "https://storage.googleapis.com/" + vide_desc_uri.split("gs://")[1]
-        #)
+        vide_desc_uri = "gs://image_video_storage/video.mp4"
         # Audio Uploading Tab
         bucket_name = 'image_video_storage'
         # 1. Authenticate to Google Cloud
@@ -313,11 +284,11 @@ with tab4:
         # Get the blob (file) object
         vide_desc_uri_regex = vide_desc_uri.replace("gs://image_video_storage/","")
         blob = bucket.blob(vide_desc_uri_regex)
-        blob.download_to_filename('video_files/temp_1.mp4')
+        blob.download_to_filename('video_files/video.mp4')
         if vide_desc_uri:
             vide_desc_img = Part.from_uri(vide_desc_uri, mime_type="video/mp4")
             print(vide_desc_img)
-            st.video('video_files/temp_1.mp4', format="video/mp4")
+            st.video('video_files/video.mp4', format="video/mp4")
             st.write("Our expectation: Generate the description of the video")
             prompt = """
             Describe the interior design of the space in details for each of the following mentioned points: \n
@@ -348,13 +319,10 @@ with tab4:
         st.markdown(
             """Gemini 1.0 Pro Vision can also extract tags throughout a video, as shown below:."""
         )
-        video_tags_uri = "gs://image_video_storage/production_id_3773486 (1080p).mp4"
-        #video_tags_url = (
-        #    "https://storage.googleapis.com/" + video_tags_uri.split("gs://")[1]
-        #)
+        video_tags_uri = "gs://image_video_storage/video.mp4"
         if video_tags_uri:
             video_tags_img = Part.from_uri(video_tags_uri, mime_type="video/mp4")
-            st.video('video_files/temp_1.mp4', format="video/mp4")
+            st.video('video_files/video.mp4', format="video/mp4")
             st.write("Our expectation: Generate the tags for the video")
             prompt = """Answer the following questions using the video only:
                         1. What is in the video?
