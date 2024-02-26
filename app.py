@@ -5,6 +5,7 @@ Created on Mon Feb 26 23:56:10 2024
 @author: P00121384
 """
 import os
+import PIL.Image
 from pathlib import Path as p
 import streamlit as st
 #from generate_file import image_creation
@@ -90,6 +91,18 @@ def get_gemini_pro_vision_response(
     return "".join(final_response)
 
 
+########################## Page configuration #############################
+fp = open("./streamlit/AP.jpg","rb")
+image = PIL.Image.open(fp)
+st.set_page_config(
+    page_title="Beyond BHS",
+    page_icon=image,
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'About': "## Get the AI based recommendation of the AP SKU and descriptions of interior\n **Contact for updates** : Team Asian Paints -6A"
+    })
+
 st.header("Beyond BHS: Recommendation & Description🪄", divider="rainbow")
 text_model_pro, multimodal_model_pro = load_models()
 
@@ -99,11 +112,10 @@ tab3, tab4 = st.tabs(
 
 with tab3:
     st.write("Using Gemini 1.0 Pro Vision - Multimodal model")
-    image_undst, diagrams_undst, recommendations = st.tabs(
+    image_undst, diagrams_undst = st.tabs(
         [
             "Furniture recommendation",
             "Interior Design Description",
-            "Interior recommendation",
         ]
     )
 
@@ -243,76 +255,6 @@ with tab3:
         with tab2:
             st.write("Prompt used:")
             st.text(prompt + "\n" + "input_image")
-
-    with recommendations:
-        compare_img_1_uri = (
-            "gs://github-repo/img/gemini/multimodality_usecases_overview/glasses1.jpg"
-        )
-        compare_img_2_uri = (
-            "gs://github-repo/img/gemini/multimodality_usecases_overview/glasses2.jpg"
-        )
-
-        compare_img_1_url = (
-            "https://storage.googleapis.com/" + compare_img_1_uri.split("gs://")[1]
-        )
-        compare_img_2_url = (
-            "https://storage.googleapis.com/" + compare_img_2_uri.split("gs://")[1]
-        )
-
-        st.write(
-            """Gemini 1.0 Pro Vision is capable of image generation. This will help user to get the view of Interior Design they are looking for:"""
-        )
-        compare_img_1_img = Part.from_uri(compare_img_1_uri, mime_type="image/jpeg")
-        compare_img_2_img = Part.from_uri(compare_img_2_uri, mime_type="image/jpeg")
-        face_type = st.radio(
-            "What is your face shape?",
-            ["Oval", "Round", "Square", "Heart", "Diamond"],
-            key="face_type",
-            horizontal=True,
-        )
-        output_type = st.radio(
-            "Select the output type",
-            ["text", "table", "json"],
-            key="output_type",
-            horizontal=True,
-        )
-        st.image(
-            [compare_img_1_url, compare_img_2_url],
-            width=350,
-            caption=["Glasses type 1", "Glasses type 2"],
-        )
-        st.write(
-            f"Our expectation: Suggest which glasses type is better for the {face_type} face shape"
-        )
-        content = [
-            f"""Which of these glasses you recommend for me based on the shape of my face:{face_type}?
-           I have an {face_type} shape face.
-           Glasses 1: """,
-            compare_img_1_img,
-            """
-           Glasses 2: """,
-            compare_img_2_img,
-            f"""
-           Explain how you reach out to this decision.
-           Provide your recommendation based on my face shape, and reasoning for each in {output_type} format.
-           """,
-        ]
-        tab1, tab2 = st.tabs(["Response", "Prompt"])
-        compare_img_description = st.button(
-            "Generate recommendation!", key="compare_img_description"
-        )
-        with tab1:
-            if compare_img_description and content:
-                with st.spinner(
-                    "Generating recommendations using Gemini 1.0 Pro Vision..."
-                ):
-                    response = get_gemini_pro_vision_response(
-                        multimodal_model_pro, content
-                    )
-                    st.markdown(response)
-        with tab2:
-            st.write("Prompt used:")
-            st.text(content)
 
 with tab4:
     st.write("Using Gemini 1.0 Pro Vision - Multimodal model")
