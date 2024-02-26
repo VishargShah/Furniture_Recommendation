@@ -82,7 +82,7 @@ def get_gemini_pro_vision_response(
     return "".join(final_response)
 
 
-st.header("Vertex AI Gemini 1.0 API", divider="rainbow")
+st.header("Beyond BHS: Recommendation & Description🪄", divider="rainbow")
 text_model_pro, multimodal_model_pro = load_models()
 
 tab3, tab4 = st.tabs(
