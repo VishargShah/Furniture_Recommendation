@@ -6,6 +6,7 @@ Created on Mon Feb 26 23:56:10 2024
 """
 import os
 import streamlit as st
+from generate_file import image_creation
 import vertexai
 from vertexai.generative_models import (
     GenerationConfig,
@@ -90,12 +91,11 @@ tab3, tab4 = st.tabs(
 
 with tab3:
     st.write("Using Gemini 1.0 Pro Vision - Multimodal model")
-    image_undst, diagrams_undst, recommendations, sim_diff = st.tabs(
+    image_undst, diagrams_undst, recommendations = st.tabs(
         [
             "Furniture recommendation",
-            "ER diagrams",
-            "Glasses recommendation",
-            "Math reasoning",
+            "Interior Design Description",
+            "Interior recommendation",
         ]
     )
 
@@ -252,8 +252,7 @@ with tab3:
         )
 
         st.write(
-            """Gemini 1.0 Pro Vision is capable of image comparison and providing recommendations. This may be useful in industries like e-commerce and retail.
-                    Below is an example of choosing which pair of glasses would be better suited to various face types:"""
+            """Gemini 1.0 Pro Vision is capable of image generation. This will help user to get the view of Interior Design they are looking for:"""
         )
         compare_img_1_img = Part.from_uri(compare_img_1_uri, mime_type="image/jpeg")
         compare_img_2_img = Part.from_uri(compare_img_2_uri, mime_type="image/jpeg")
@@ -307,57 +306,11 @@ with tab3:
             st.write("Prompt used:")
             st.text(content)
 
-    with sim_diff:
-        math_image_uri = "gs://github-repo/img/gemini/multimodality_usecases_overview/math_beauty.jpg"
-        math_image_url = (
-            "https://storage.googleapis.com/" + math_image_uri.split("gs://")[1]
-        )
-        st.write(
-            "Gemini 1.0 Pro Vision can also recognize math formulas and equations and extract specific information from them. This capability is particularly useful for generating explanations for math problems, as shown below."
-        )
-        math_image_img = Part.from_uri(math_image_uri, mime_type="image/jpeg")
-        st.image(math_image_url, width=350, caption="Image of a math equation")
-        st.markdown(
-            """
-                Our expectation: Ask questions about the math equation as follows:
-                - Extract the formula.
-                - What is the symbol right before Pi? What does it mean?
-                - Is this a famous formula? Does it have a name?
-                    """
-        )
-        prompt = """
-Follow the instructions.
-Surround math expressions with $.
-Use a table with a row for each instruction and its result.
-
-INSTRUCTIONS:
-- Extract the formula.
-- What is the symbol right before Pi? What does it mean?
-- Is this a famous formula? Does it have a name?
-"""
-        tab1, tab2 = st.tabs(["Response", "Prompt"])
-        math_image_description = st.button(
-            "Generate answers!", key="math_image_description"
-        )
-        with tab1:
-            if math_image_description and prompt:
-                with st.spinner(
-                    "Generating answers for formula using Gemini 1.0 Pro Vision..."
-                ):
-                    response = get_gemini_pro_vision_response(
-                        multimodal_model_pro, [math_image_img, prompt]
-                    )
-                    st.markdown(response)
-                    st.markdown("\n\n\n")
-        with tab2:
-            st.write("Prompt used:")
-            st.text(prompt)
-
 with tab4:
     st.write("Using Gemini 1.0 Pro Vision - Multimodal model")
 
-    vide_desc, video_tags, video_highlights, video_geolocation = st.tabs(
-        ["Video description", "Video tags", "Video highlights", "Video geolocation"]
+    vide_desc, video_tags = st.tabs(
+        ["Video description", "Video tags"]
     )
 
     with vide_desc:
@@ -425,94 +378,6 @@ with tab4:
                     ):
                         response = get_gemini_pro_vision_response(
                             multimodal_model_pro, [prompt, video_tags_img]
-                        )
-                        st.markdown(response)
-                        st.markdown("\n\n\n")
-            with tab2:
-                st.write("Prompt used:")
-                st.write(prompt, "\n", "{video_data}")
-    with video_highlights:
-        st.markdown(
-            """Below is another example of using Gemini 1.0 Pro Vision to ask questions about objects, people or the context, as shown in the video about Pixel 8 below:"""
-        )
-        video_highlights_uri = (
-            "gs://github-repo/img/gemini/multimodality_usecases_overview/pixel8.mp4"
-        )
-        video_highlights_url = (
-            "https://storage.googleapis.com/" + video_highlights_uri.split("gs://")[1]
-        )
-        if video_highlights_url:
-            video_highlights_img = Part.from_uri(
-                video_highlights_uri, mime_type="video/mp4"
-            )
-            st.video(video_highlights_url)
-            st.write("Our expectation: Generate the highlights for the video")
-            prompt = """Answer the following questions using the video only:
-What is the profession of the girl in this video?
-Which all features of the phone are highlighted here?
-Summarize the video in one paragraph.
-Provide the answer in table format.
-            """
-            tab1, tab2 = st.tabs(["Response", "Prompt"])
-            video_highlights_description = st.button(
-                "Generate video highlights", key="video_highlights_description"
-            )
-            with tab1:
-                if video_highlights_description and prompt:
-                    with st.spinner(
-                        "Generating video highlights using Gemini 1.0 Pro Vision ..."
-                    ):
-                        response = get_gemini_pro_vision_response(
-                            multimodal_model_pro, [prompt, video_highlights_img]
-                        )
-                        st.markdown(response)
-                        st.markdown("\n\n\n")
-            with tab2:
-                st.write("Prompt used:")
-                st.write(prompt, "\n", "{video_data}")
-
-    with video_geolocation:
-        st.markdown(
-            """Even in short, detail-packed videos, Gemini 1.0 Pro Vision can identify the locations."""
-        )
-        video_geolocation_uri = (
-            "gs://github-repo/img/gemini/multimodality_usecases_overview/bus.mp4"
-        )
-        video_geolocation_url = (
-            "https://storage.googleapis.com/" + video_geolocation_uri.split("gs://")[1]
-        )
-        if video_geolocation_url:
-            video_geolocation_img = Part.from_uri(
-                video_geolocation_uri, mime_type="video/mp4"
-            )
-            st.video(video_geolocation_url)
-            st.markdown(
-                """Our expectation: \n
-            Answer the following questions from the video:
-                - What is this video about?
-                - How do you know which city it is?
-                - What street is this?
-                - What is the nearest intersection?
-            """
-            )
-            prompt = """Answer the following questions using the video only:
-            What is this video about?
-            How do you know which city it is?
-            What street is this?
-            What is the nearest intersection?
-            Answer the following questions in a table format with question and answer as columns.
-            """
-            tab1, tab2 = st.tabs(["Response", "Prompt"])
-            video_geolocation_description = st.button(
-                "Generate", key="video_geolocation_description"
-            )
-            with tab1:
-                if video_geolocation_description and prompt:
-                    with st.spinner(
-                        "Generating location tags using Gemini 1.0 Pro Vision ..."
-                    ):
-                        response = get_gemini_pro_vision_response(
-                            multimodal_model_pro, [prompt, video_geolocation_img]
                         )
                         st.markdown(response)
                         st.markdown("\n\n\n")
