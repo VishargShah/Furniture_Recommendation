@@ -155,23 +155,23 @@ with tab3:
         st.image('image_recommendation/recommendation_on.jpeg', width=500, caption="Image of a living room")
 
         # Get the blob (file) object
-        room_image_uri_regex = sku_1_image_uri.replace("gs://image_video_storage/","")
-        blob = bucket.blob(room_image_uri_regex)
+        sku_1_image_uri_regex = sku_1_image_uri.replace("gs://image_video_storage/","")
+        blob = bucket.blob(sku_1_image_uri_regex)
         blob.download_to_filename('image_recommendation/image1.jpeg')
         
         # Get the blob (file) object
-        room_image_uri_regex = sku_2_image_uri.replace("gs://image_video_storage/","")
-        blob = bucket.blob(room_image_uri_regex)
+        sku_2_image_uri_regex = sku_2_image_uri.replace("gs://image_video_storage/","")
+        blob = bucket.blob(sku_2_image_uri_regex)
         blob.download_to_filename('image_recommendation/image2.jpeg')
         
         # Get the blob (file) object
-        room_image_uri_regex = sku_3_image_uri.replace("gs://image_video_storage/","")
-        blob = bucket.blob(room_image_uri_regex)
+        sku_3_image_uri_regex = sku_3_image_uri.replace("gs://image_video_storage/","")
+        blob = bucket.blob(sku_3_image_uri_regex)
         blob.download_to_filename('image_recommendation/image3.jpeg')
         
         # Get the blob (file) object
-        room_image_uri_regex = sku_4_image_uri.replace("gs://image_video_storage/","")
-        blob = bucket.blob(room_image_uri_regex)
+        sku_4_image_uri_regex = sku_4_image_uri.replace("gs://image_video_storage/","")
+        blob = bucket.blob(sku_4_image_uri_regex)
         blob.download_to_filename('image_recommendation/image4.jpeg')
         
         st.image(
