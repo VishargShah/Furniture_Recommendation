@@ -128,14 +128,6 @@ with tab3:
                     """
         )
         
-        # Audio Uploading Tab
-        bucket_name = 'image_video_storage'
-        # 1. Authenticate to Google Cloud
-        credentials, project = google.auth.default()
-        # 2. Create a storage client
-        storage_client = storage.Client(project=PROJECT_ID)
-        # 3. Get a reference to the bucket (check existence)
-        bucket = storage_client.bucket(bucket_name)
         
         
         room_image_uri = "gs://image_video_storage/recommendation_on.jpeg"
@@ -171,11 +163,18 @@ with tab3:
         SKU_3_image = Part.from_uri(chair_3_image_uri, mime_type="image/jpeg")
         SKU_4_image = Part.from_uri(chair_4_image_uri, mime_type="image/jpeg")
 
-        
+        # Audio Uploading Tab
+        bucket_name = 'image_video_storage'
+        # 1. Authenticate to Google Cloud
+        credentials, project = google.auth.default()
+        # 2. Create a storage client
+        storage_client = storage.Client(project=PROJECT_ID)
+        # 3. Get a reference to the bucket (check existence)
+        bucket = storage_client.bucket(bucket_name)
         # Get the blob (file) object
         room_image_uri_regex = room_image_uri.replace("gs://image_video_storage/","")
         blob = bucket.blob(room_image_uri_regex)
-        blob.download_to_filename('image_description/recommendation_on.jpeg')
+        blob.download_to_filename('image_recommendation/recommendation_on.jpeg')
         st.image('image_recommendation/recommendation_on.jpeg', width=500, caption="Image of a living room")
         
         st.image(
