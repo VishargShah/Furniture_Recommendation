@@ -30,6 +30,8 @@ data_folder = p.cwd() / "video_files"
 p(data_folder).mkdir(parents=True, exist_ok=True)
 data_folder = p.cwd() / "image_description"
 p(data_folder).mkdir(parents=True, exist_ok=True)
+data_folder = p.cwd() / "image_recommendation"
+p(data_folder).mkdir(parents=True, exist_ok=True)
 
 @st.cache_resource
 def load_models():
@@ -126,21 +128,17 @@ with tab3:
                     """
         )
         
+        # Audio Uploading Tab
+        bucket_name = 'image_video_storage'
+        # 1. Authenticate to Google Cloud
+        credentials, project = google.auth.default()
+        # 2. Create a storage client
+        storage_client = storage.Client(project=PROJECT_ID)
+        # 3. Get a reference to the bucket (check existence)
+        bucket = storage_client.bucket(bucket_name)
         
-        # upload image - Interior Design 
-        #with st.form("my-form", clear_on_submit=True):
-        #    uploaded_files = st.file_uploader("Choose an Interior image:", type=['png', 'jpg'], accept_multiple_files=False)
-        #    submitted = st.form_submit_button("SUBMIT")
         
-        # upload image - Catalogue
-        #with st.form("my-form", clear_on_submit=True):
-        #    uploaded_files = st.file_uploader("Choose an image from Catalogue:", type=['png', 'jpg'], accept_multiple_files=True)
-        #    submitted = st.form_submit_button("SUBMIT")
-        
-
-        room_image_uri = (
-            "gs://github-repo/img/gemini/retail-recommendations/rooms/living_room.jpeg"
-        )
+        room_image_uri = "gs://image_video_storage/recommendation_on.jpeg"
         chair_1_image_uri = (
             "gs://github-repo/img/gemini/retail-recommendations/furnitures/chair1.jpeg"
         )
@@ -154,9 +152,6 @@ with tab3:
             "gs://github-repo/img/gemini/retail-recommendations/furnitures/chair4.jpeg"
         )
 
-        room_image_urls = (
-            "https://storage.googleapis.com/" + room_image_uri.split("gs://")[1]
-        )
         chair_1_image_urls = (
             "https://storage.googleapis.com/" + chair_1_image_uri.split("gs://")[1]
         )
@@ -171,12 +166,18 @@ with tab3:
         )
 
         room_image = Part.from_uri(room_image_uri, mime_type="image/jpeg")
-        chair_1_image = Part.from_uri(chair_1_image_uri, mime_type="image/jpeg")
-        chair_2_image = Part.from_uri(chair_2_image_uri, mime_type="image/jpeg")
-        chair_3_image = Part.from_uri(chair_3_image_uri, mime_type="image/jpeg")
-        chair_4_image = Part.from_uri(chair_4_image_uri, mime_type="image/jpeg")
+        SKU_1_image = Part.from_uri(chair_1_image_uri, mime_type="image/jpeg")
+        SKU_2_image = Part.from_uri(chair_2_image_uri, mime_type="image/jpeg")
+        SKU_3_image = Part.from_uri(chair_3_image_uri, mime_type="image/jpeg")
+        SKU_4_image = Part.from_uri(chair_4_image_uri, mime_type="image/jpeg")
 
-        st.image(room_image_urls, width=350, caption="Image of a living room")
+        
+        # Get the blob (file) object
+        room_image_uri_regex = room_image_uri.replace("gs://image_video_storage/","")
+        blob = bucket.blob(room_image_uri_regex)
+        blob.download_to_filename('image_description/describe_image.jpeg')
+        st.image('image_recommendation/recommendation_on.jpeg', width=500, caption="Image of a living room")
+        
         st.image(
             [
                 chair_1_image_urls,
@@ -185,23 +186,23 @@ with tab3:
                 chair_4_image_urls,
             ],
             width=200,
-            caption=["Chair 1", "Chair 2", "Chair 3", "Chair 4"],
+            caption=["SKU 1", "SKU 2", "SKU 3", "SKU 4"],
         )
 
         st.write(
             "Our expectation: Recommend a chair that would complement the given image of a living room."
         )
         content = [
-            "Consider the following chairs:",
-            "chair 1:",
-            chair_1_image,
-            "chair 2:",
-            chair_2_image,
-            "chair 3:",
-            chair_3_image,
+            "Consider the following SKU:",
+            "SKU 1:",
+            SKU_1_image,
+            "SKU 2:",
+            SKU_2_image,
+            "SKU 3:",
+            SKU_3_image,
             "and",
-            "chair 4:",
-            chair_4_image,
+            "SKU 4:",
+            SKU_4_image,
             "\n"
             "For each chair, explain why it would be suitable or not suitable for the following room:",
             room_image,
@@ -287,7 +288,6 @@ with tab4:
         blob.download_to_filename('video_files/video.mp4')
         if vide_desc_uri:
             vide_desc_img = Part.from_uri(vide_desc_uri, mime_type="video/mp4")
-            print(vide_desc_img)
             st.video('video_files/video.mp4', format="video/mp4")
             st.write("Our expectation: Generate the description of the video")
             prompt = """
