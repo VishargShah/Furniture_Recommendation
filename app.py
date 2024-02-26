@@ -343,7 +343,7 @@ with tab4:
         #)
         if vide_desc_uri:
             vide_desc_img = Part.from_uri(vide_desc_uri, mime_type="video/mp4")
-            st.video(vide_desc_uri)
+            #st.video(vide_desc_uri)
             st.write("Our expectation: Generate the description of the video")
             prompt = """Describe the interior design of the space: \n
             - What is the kind of design & theme? \n
