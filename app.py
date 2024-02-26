@@ -339,7 +339,9 @@ with tab4:
         storage_client = storage.Client(project=PROJECT_ID)
         # 3. Get a reference to the bucket (check existence)
         bucket = storage_client.bucket(bucket_name)
-        blob = bucket.blob(vide_desc_uri)
+        # Get the blob (file) object
+        vide_desc_uri_regex = vide_desc_uri.replace("gs://customer_voice_packets/","")
+        blob = bucket.blob(vide_desc_uri_regex)
         blob.download_to_filename('video_files/temp_1.mp4')
         if vide_desc_uri:
             vide_desc_img = Part.from_uri(vide_desc_uri, mime_type="video/mp4")
