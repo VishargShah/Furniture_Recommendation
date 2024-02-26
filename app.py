@@ -192,20 +192,21 @@ with tab3:
             "Our expectation: Recommend a chair that would complement the given image of a living room."
         )
         content = [
-            "Consider the following SKU:",
-            "SKU 1:",
+            "Consider yourself a experienced Interior Designer. You need to provide the suggestion of the furniture or other object which will go with the theme of the house."
+            "Consider the following Furniture object:",
+            "object 1:",
             SKU_1_image,
-            "SKU 2:",
+            "object 2:",
             SKU_2_image,
-            "SKU 3:",
+            "object 3:",
             SKU_3_image,
             "and",
-            "SKU 4:",
+            "object 4:",
             SKU_4_image,
             "\n"
-            "For each chair, explain why it would be suitable or not suitable for the following room:",
+            "For each object, explain why it would be suitable or not suitable for the following room:",
             room_image,
-            "Only recommend for the room provided and not other rooms. Provide your recommendation in a table format with chair name and reason as columns.",
+            "Only recommend for the room provided and not other rooms. Provide your recommendation in a table format with chair name and reason as columns in detail.",
         ]
 
         tab1, tab2 = st.tabs(["Response", "Prompt"])
