@@ -84,210 +84,15 @@ def get_gemini_pro_vision_response(
 st.header("Vertex AI Gemini 1.0 API", divider="rainbow")
 text_model_pro, multimodal_model_pro = load_models()
 
-tab1, tab2, tab3, tab4 = st.tabs(
-    ["Generate story", "Marketing campaign", "Image Playground", "Video Playground"]
+tab3, tab4 = st.tabs(
+    ["Image Playground", "Video Playground"]
 )
-
-with tab1:
-    st.write("Using Gemini 1.0 Pro - Text only model")
-    st.subheader("Generate a story")
-
-    # Story premise
-    character_name = st.text_input(
-        "Enter character name: \n\n", key="character_name", value="Mittens"
-    )
-    character_type = st.text_input(
-        "What type of character is it? \n\n", key="character_type", value="Cat"
-    )
-    character_persona = st.text_input(
-        "What personality does the character have? \n\n",
-        key="character_persona",
-        value="Mitten is a very friendly cat.",
-    )
-    character_location = st.text_input(
-        "Where does the character live? \n\n",
-        key="character_location",
-        value="Andromeda Galaxy",
-    )
-    story_premise = st.multiselect(
-        "What is the story premise? (can select multiple) \n\n",
-        [
-            "Love",
-            "Adventure",
-            "Mystery",
-            "Horror",
-            "Comedy",
-            "Sci-Fi",
-            "Fantasy",
-            "Thriller",
-        ],
-        key="story_premise",
-        default=["Love", "Adventure"],
-    )
-    creative_control = st.radio(
-        "Select the creativity level: \n\n",
-        ["Low", "High"],
-        key="creative_control",
-        horizontal=True,
-    )
-    length_of_story = st.radio(
-        "Select the length of the story: \n\n",
-        ["Short", "Long"],
-        key="length_of_story",
-        horizontal=True,
-    )
-
-    if creative_control == "Low":
-        temperature = 0.30
-    else:
-        temperature = 0.95
-
-    max_output_tokens = 2048
-
-    prompt = f"""Write a {length_of_story} story based on the following premise: \n
-    character_name: {character_name} \n
-    character_type: {character_type} \n
-    character_persona: {character_persona} \n
-    character_location: {character_location} \n
-    story_premise: {",".join(story_premise)} \n
-    If the story is "short", then make sure to have 5 chapters or else if it is "long" then 10 chapters.
-    Important point is that each chapters should be generated based on the premise given above.
-    First start by giving the book introduction, chapter introductions and then each chapter. It should also have a proper ending.
-    The book should have prologue and epilogue.
-    """
-    config = {
-        "temperature": 0.8,
-        "max_output_tokens": 2048,
-    }
-
-    generate_t2t = st.button("Generate my story", key="generate_t2t")
-    if generate_t2t and prompt:
-        # st.write(prompt)
-        with st.spinner("Generating your story using Gemini 1.0 Pro ..."):
-            first_tab1, first_tab2 = st.tabs(["Story", "Prompt"])
-            with first_tab1:
-                response = get_gemini_pro_text_response(
-                    text_model_pro,
-                    prompt,
-                    generation_config=config,
-                )
-                if response:
-                    st.write("Your story:")
-                    st.write(response)
-            with first_tab2:
-                st.text(prompt)
-
-with tab2:
-    st.write("Using Gemini 1.0 Pro - Text only model")
-    st.subheader("Generate your marketing campaign")
-
-    product_name = st.text_input(
-        "What is the name of the product? \n\n", key="product_name", value="ZomZoo"
-    )
-    product_category = st.radio(
-        "Select your product category: \n\n",
-        ["Clothing", "Electronics", "Food", "Health & Beauty", "Home & Garden"],
-        key="product_category",
-        horizontal=True,
-    )
-    st.write("Select your target audience: ")
-    target_audience_age = st.radio(
-        "Target age: \n\n",
-        ["18-24", "25-34", "35-44", "45-54", "55-64", "65+"],
-        key="target_audience_age",
-        horizontal=True,
-    )
-    # target_audience_gender = st.radio("Target gender: \n\n",["male","female","trans","non-binary","others"],key="target_audience_gender",horizontal=True)
-    target_audience_location = st.radio(
-        "Target location: \n\n",
-        ["Urban", "Suburban", "Rural"],
-        key="target_audience_location",
-        horizontal=True,
-    )
-    st.write("Select your marketing campaign goal: ")
-    campaign_goal = st.multiselect(
-        "Select your marketing campaign goal: \n\n",
-        [
-            "Increase brand awareness",
-            "Generate leads",
-            "Drive sales",
-            "Improve brand sentiment",
-        ],
-        key="campaign_goal",
-        default=["Increase brand awareness", "Generate leads"],
-    )
-    if campaign_goal is None:
-        campaign_goal = ["Increase brand awareness", "Generate leads"]
-    brand_voice = st.radio(
-        "Select your brand voice: \n\n",
-        ["Formal", "Informal", "Serious", "Humorous"],
-        key="brand_voice",
-        horizontal=True,
-    )
-    estimated_budget = st.radio(
-        "Select your estimated budget ($): \n\n",
-        ["1,000-5,000", "5,000-10,000", "10,000-20,000", "20,000+"],
-        key="estimated_budget",
-        horizontal=True,
-    )
-
-    prompt = f"""Generate a marketing campaign for {product_name}, a {product_category} designed for the age group: {target_audience_age}.
-    The target location is this: {target_audience_location}.
-    Aim to primarily achieve {campaign_goal}.
-    Emphasize the product's unique selling proposition while using a {brand_voice} tone of voice.
-    Allocate the total budget of {estimated_budget}.
-    With these inputs, make sure to follow following guidelines and generate the marketing campaign with proper headlines: \n
-    - Briefly describe company, its values, mission, and target audience.
-    - Highlight any relevant brand guidelines or messaging frameworks.
-    - Provide a concise overview of the campaign's objectives and goals.
-    - Briefly explain the product or service being promoted.
-    - Define your ideal customer with clear demographics, psychographics, and behavioral insights.
-    - Understand their needs, wants, motivations, and pain points.
-    - Clearly articulate the desired outcomes for the campaign.
-    - Use SMART goals (Specific, Measurable, Achievable, Relevant, and Time-bound) for clarity.
-    - Define key performance indicators (KPIs) to track progress and success.
-    - Specify the primary and secondary goals of the campaign.
-    - Examples include brand awareness, lead generation, sales growth, or website traffic.
-    - Clearly define what differentiates your product or service from competitors.
-    - Emphasize the value proposition and unique benefits offered to the target audience.
-    - Define the desired tone and personality of the campaign messaging.
-    - Identify the specific channels you will use to reach your target audience.
-    - Clearly state the desired action you want the audience to take.
-    - Make it specific, compelling, and easy to understand.
-    - Identify and analyze your key competitors in the market.
-    - Understand their strengths and weaknesses, target audience, and marketing strategies.
-    - Develop a differentiation strategy to stand out from the competition.
-    - Define how you will track the success of the campaign.
-   -  Utilize relevant KPIs to measure performance and return on investment (ROI).
-   Give proper bullet points and headlines for the marketing campaign. Do not produce any empty lines.
-   Be very succinct and to the point.
-    """
-    config = {
-        "temperature": 0.8,
-        "max_output_tokens": 2048,
-    }
-    generate_t2t = st.button("Generate my campaign", key="generate_campaign")
-    if generate_t2t and prompt:
-        second_tab1, second_tab2 = st.tabs(["Campaign", "Prompt"])
-        with st.spinner("Generating your marketing campaign using Gemini 1.0 Pro ..."):
-            with second_tab1:
-                response = get_gemini_pro_text_response(
-                    text_model_pro,
-                    prompt,
-                    generation_config=config,
-                )
-                if response:
-                    st.write("Your marketing campaign:")
-                    st.write(response)
-            with second_tab2:
-                st.text(prompt)
 
 with tab3:
     st.write("Using Gemini 1.0 Pro Vision - Multimodal model")
-    image_undst, screens_undst, diagrams_undst, recommendations, sim_diff = st.tabs(
+    image_undst, diagrams_undst, recommendations, sim_diff = st.tabs(
         [
             "Furniture recommendation",
-            "Oven instructions",
             "ER diagrams",
             "Glasses recommendation",
             "Math reasoning",
@@ -299,6 +104,18 @@ with tab3:
             """In this demo, you will be presented with a scene (e.g., a living room) and will use the Gemini 1.0 Pro Vision model to perform visual understanding. You will see how Gemini 1.0 can be used to recommend an item (e.g., a chair) from a list of furniture options as input. You can use Gemini 1.0 Pro Vision to recommend a chair that would complement the given scene and will be provided with its rationale for such selections from the provided list.
                     """
         )
+        
+        
+        # upload image - Interior Design 
+        #with st.form("my-form", clear_on_submit=True):
+        #    uploaded_files = st.file_uploader("Choose an Interior image:", type=['png', 'jpg'], accept_multiple_files=False)
+        #    submitted = st.form_submit_button("SUBMIT")
+        
+        # upload image - Catalogue
+        #with st.form("my-form", clear_on_submit=True):
+        #    uploaded_files = st.file_uploader("Choose an image from Catalogue:", type=['png', 'jpg'], accept_multiple_files=True)
+        #    submitted = st.form_submit_button("SUBMIT")
+        
 
         room_image_uri = (
             "gs://github-repo/img/gemini/retail-recommendations/rooms/living_room.jpeg"
@@ -386,43 +203,6 @@ with tab3:
         with tab2:
             st.write("Prompt used:")
             st.text(content)
-
-    with screens_undst:
-        stove_screen_uri = (
-            "gs://github-repo/img/gemini/multimodality_usecases_overview/stove.jpg"
-        )
-        stove_screen_url = (
-            "https://storage.googleapis.com/" + stove_screen_uri.split("gs://")[1]
-        )
-
-        st.write(
-            "Equipped with the ability to extract information from visual elements on screens, Gemini 1.0 Pro Vision can analyze screenshots, icons, and layouts to provide a holistic understanding of the depicted scene."
-        )
-        # cooking_what = st.radio("What are you cooking?",["Turkey","Pizza","Cake","Bread"],key="cooking_what",horizontal=True)
-        stove_screen_img = Part.from_uri(stove_screen_uri, mime_type="image/jpeg")
-        st.image(stove_screen_url, width=350, caption="Image of a oven")
-        st.write(
-            "Our expectation: Provide instructions for resetting the clock on this appliance in English"
-        )
-        prompt = """How can I reset the clock on this appliance? Provide the instructions in English.
-If instructions include buttons, also explain where those buttons are physically located.
-"""
-        tab1, tab2 = st.tabs(["Response", "Prompt"])
-        generate_instructions_description = st.button(
-            "Generate instructions", key="generate_instructions_description"
-        )
-        with tab1:
-            if generate_instructions_description and prompt:
-                with st.spinner(
-                    "Generating instructions using Gemini 1.0 Pro Vision..."
-                ):
-                    response = get_gemini_pro_vision_response(
-                        multimodal_model_pro, [stove_screen_img, prompt]
-                    )
-                    st.markdown(response)
-        with tab2:
-            st.write("Prompt used:")
-            st.text(prompt + "\n" + "input_image")
 
     with diagrams_undst:
         er_diag_uri = (
