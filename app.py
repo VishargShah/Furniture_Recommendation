@@ -175,7 +175,7 @@ with tab3:
         # Get the blob (file) object
         room_image_uri_regex = room_image_uri.replace("gs://image_video_storage/","")
         blob = bucket.blob(room_image_uri_regex)
-        blob.download_to_filename('image_description/describe_image.jpeg')
+        blob.download_to_filename('image_description/recommendation_on.jpeg')
         st.image('image_recommendation/recommendation_on.jpeg', width=500, caption="Image of a living room")
         
         st.image(
