@@ -269,6 +269,35 @@ with tab4:
         )
         
         
+        # 4. Handle uploaded file
+        #with st.form("my-form", clear_on_submit=True):
+        #    uploaded_file = st.file_uploader("Choose a video file:", type=[".mp4"], accept_multiple_files=False)
+        #    submitted = st.form_submit_button("SUBMIT")
+        #if uploaded_file is not None:
+        #    # Iterate through all the uploaded videos
+        #    for file in uploaded_file:
+        #        # Save the video:
+        #        vid = f"{file.name}"
+        #        with open("video_files/" + vid, mode="wb") as f:
+        #            f.write(file.read())     
+        #    # 6. Create blob and upload the file
+        #    blob = bucket.blob(vid)
+        #    blob.upload_from_string(audio_bytes, content_type=uploaded_file.type)
+        #    # Write on local
+        #    with open("data/" + filename, mode="wb") as f:
+        #        f.write(audio_bytes)        
+        #    # Print success message
+        #    st.success(f"File uploaded successfully: {filename}")
+        #else:
+        #    st.info("Please upload a WAV file.")
+
+        
+        
+        
+        
+        
+        
+        
         vide_desc_uri = "gs://image_video_storage/production_id_3773486 (1080p).mp4"
         #video_desc_url = (
         #    "https://storage.googleapis.com/" + vide_desc_uri.split("gs://")[1]
@@ -287,6 +316,7 @@ with tab4:
         blob.download_to_filename('video_files/temp_1.mp4')
         if vide_desc_uri:
             vide_desc_img = Part.from_uri(vide_desc_uri, mime_type="video/mp4")
+            print(vide_desc_img)
             st.video('video_files/temp_1.mp4', format="video/mp4")
             st.write("Our expectation: Generate the description of the video")
             prompt = """
