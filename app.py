@@ -16,6 +16,8 @@ from vertexai.generative_models import (
     HarmCategory,
     Part,
 )
+import google.auth
+from google.cloud import storage
 
 PROJECT_ID = os.environ.get("GCP_PROJECT")  # Your Google Cloud Project ID
 LOCATION = os.environ.get("GCP_REGION")  # Your Google Cloud Project Region
@@ -336,12 +338,12 @@ with tab4:
         #            f.write(file.read())
         
         vide_desc_uri = "gs://image_video_storage/production_id_3773486 (1080p).mp4"
-        video_desc_url = (
-            "https://storage.googleapis.com/" + vide_desc_uri.split("gs://")[1]
-        )
+        #video_desc_url = (
+        #    "https://storage.googleapis.com/" + vide_desc_uri.split("gs://")[1]
+        #)
         if vide_desc_uri:
             vide_desc_img = Part.from_uri(vide_desc_uri, mime_type="video/mp4")
-            st.video(video_desc_url)
+            st.video(vide_desc_uri)
             st.write("Our expectation: Generate the description of the video")
             prompt = """Describe the interior design of the space: \n
             - What is the kind of design & theme? \n
