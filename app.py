@@ -129,17 +129,7 @@ with tab3:
         )
         
         room_image_uri = "gs://image_video_storage/recommendation_on.jpeg"
-        sku_1_image_uri = "gs://image_video_storage/image1.jpeg"
-        sku_2_image_uri = "gs://image_video_storage/image2.jpeg"
-        sku_3_image_uri = "gs://image_video_storage/image3.jpeg"
-        sku_4_image_uri = "gs://image_video_storage/image4.jpeg"
-
         room_image = Part.from_uri(room_image_uri, mime_type="image/jpeg")
-        SKU_1_image = Part.from_uri(sku_1_image_uri, mime_type="image/jpeg")
-        SKU_2_image = Part.from_uri(sku_2_image_uri, mime_type="image/jpeg")
-        SKU_3_image = Part.from_uri(sku_3_image_uri, mime_type="image/jpeg")
-        SKU_4_image = Part.from_uri(sku_4_image_uri, mime_type="image/jpeg")
-
         # Audio Uploading Tab
         bucket_name = 'image_video_storage'
         # 1. Authenticate to Google Cloud
@@ -152,7 +142,9 @@ with tab3:
         room_image_uri_regex = room_image_uri.replace("gs://image_video_storage/","")
         blob = bucket.blob(room_image_uri_regex)
         blob.download_to_filename('image_recommendation/recommendation_on.jpeg')
-
+        
+        sku_1_image_uri = "gs://image_video_storage/image1.jpeg"
+        SKU_1_image = Part.from_uri(sku_1_image_uri, mime_type="image/jpeg")
         # Audio Uploading Tab
         bucket_name = 'image_video_storage'
         # 1. Authenticate to Google Cloud
@@ -165,7 +157,9 @@ with tab3:
         sku_1_image_uri_regex = sku_1_image_uri.replace("gs://image_video_storage/","")
         blob = bucket.blob(sku_1_image_uri_regex)
         blob.download_to_filename('image_recommendation/image1.jpeg')
-
+        
+        sku_2_image_uri = "gs://image_video_storage/image2.jpeg"
+        SKU_2_image = Part.from_uri(sku_2_image_uri, mime_type="image/jpeg")
         # Audio Uploading Tab
         bucket_name = 'image_video_storage'
         # 1. Authenticate to Google Cloud
@@ -178,7 +172,9 @@ with tab3:
         sku_2_image_uri_regex = sku_2_image_uri.replace("gs://image_video_storage/","")
         blob = bucket.blob(sku_2_image_uri_regex)
         blob.download_to_filename('image_recommendation/image2.jpeg')
- 
+        
+        sku_3_image_uri = "gs://image_video_storage/image3.jpeg"
+        SKU_3_image = Part.from_uri(sku_3_image_uri, mime_type="image/jpeg")
         # Audio Uploading Tab
         bucket_name = 'image_video_storage'
         # 1. Authenticate to Google Cloud
@@ -192,6 +188,8 @@ with tab3:
         blob = bucket.blob(sku_3_image_uri_regex)
         blob.download_to_filename('image_recommendation/image3.jpeg')
 
+        sku_4_image_uri = "gs://image_video_storage/image4.jpeg"
+        SKU_4_image = Part.from_uri(sku_4_image_uri, mime_type="image/jpeg")
         # Audio Uploading Tab
         bucket_name = 'image_video_storage'
         # 1. Authenticate to Google Cloud
